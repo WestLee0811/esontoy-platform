@@ -1,0 +1,97 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum Tier {
+  FANJUN
+  QINGMU
+  CHIHYAN
+  XUANWU
+  TIANCHEN
+  TAIYI
+}
+
+model User {
+  id            String      @id @default(cuid())
+  email         String      @unique
+  displayName   String
+  tier          Tier
+  starBalance   Int         @default(0)
+  lifetimeSpend Int         @default(0)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  kunpans       KunPan[]
+  ledger        LedgerStar[]
+}
+
+model Item {
+  id           String   @id
+  brand        String
+  series       String
+  line         String
+  prizeTier    String
+  name         String
+  rarityClass  String
+  baseStar     Int
+  currentStar  Int
+  minStar      Int
+  decayMonthly Float
+  status       String
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  kunpans      KunPan[]
+}
+
+model KunPan {
+  id                 String   @id @default(cuid())
+  ownerId            String
+  owner              User     @relation(fields: [ownerId], references: [id])
+  itemId             String
+  item               Item     @relation(fields: [itemId], references: [id])
+  totalSlots         Int
+  grandPrizeCost     Int
+  smallPrizeUnitCost Int
+  smallPrizeQty      Int
+  otherCostPerDraw   Int      @default(0)
+  marginRatio        Float
+  curveH             Float
+  slotPrice          Int
+  status             String
+  expiresAt          DateTime
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model LedgerStar {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  delta     Int
+  reason    String
+  createdAt DateTime @default(now())
+}
+
+model RPLog {
+  id        String   @id @default(cuid())
+  source    String
+  amount    Int
+  note      String?
+  createdAt DateTime @default(now())
+}
+
+model Config {
+  id             String   @id @default(cuid())
+  targetMargin   Float
+  reserveMinPR   Int
+  pointWeightW   Float
+  energyT100     Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+// TODO: QianPan、DragonRealm、SealedStone 等 Model 待下一版擴充

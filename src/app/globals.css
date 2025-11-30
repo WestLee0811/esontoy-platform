@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  @apply bg-night-900 text-slate-100 min-h-screen font-sans antialiased;
+  background-image: radial-gradient(circle at top, rgba(99, 247, 255, 0.1), transparent 50%),
+    linear-gradient(145deg, rgba(79, 70, 229, 0.2), transparent 70%);
+}
+
+.glow-card {
+  @apply bg-night-800/80 rounded-xl border border-night-700/80 shadow-glow backdrop-blur;
+}
+
+.section-title {
+  @apply text-xl font-semibold tracking-wide text-night-neon;
+}
